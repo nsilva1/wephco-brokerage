@@ -1,9 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, sendEmailVerification, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, type User, type UserCredential } from 'firebase/auth';
-import { auth } from '../firebase/firebaseConfig';
+import { auth, db } from '../firebase/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface AuthContextType {
   currentUser: User | null;
+  loading: boolean;
+  role: string | null;
   signup: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
@@ -23,6 +26,7 @@ export const useAuth = (): AuthContextType => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [role, setRole] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     const signup = async (email: string, password: string) => {
@@ -40,15 +44,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const resetPassword = async (email: string) => sendPasswordResetEmail(auth, email);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, currentUser => {
+    const unsub = onAuthStateChanged(auth, async (currentUser) => {
       setCurrentUser(currentUser);
+
+      if(currentUser){
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid))
+        if(userDoc.exists()){
+          setRole(userDoc.data().role)
+        }
+      } else {
+        setRole(null);
+      }
+
       setLoading(false);
     });
-    return unsub;
+    return () => unsub();
   }, []);
 
     const value: AuthContextType = {
       currentUser,
+      loading,
+      role,
       signup,
       login,
       logout,
