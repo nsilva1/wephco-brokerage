@@ -29,6 +29,9 @@ export const registerUser = async (userData: IUser) => {
       email: email,
       name: name ?? '',
       role: role ?? 'Agent', // Default to 'Agent' if no role provided
+      commision: 0,
+      activeLeads: 0,
+      dealsClosed: 0,
       createdAt: serverTimestamp(),
     });
 

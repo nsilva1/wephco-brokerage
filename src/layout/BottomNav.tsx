@@ -8,12 +8,9 @@ const BottomNav = () => {
           <Link
             key={idx}
             to={item.path}
-            className="flex flex-col items-center justify-center text-stone-500 hover:text-[#7a3a1e]"
+            className="flex flex-col items-center justify-center text-stone-500 hover:text-primary"
           >
             {<item.icon />}
-            <span className="text-[10px] mt-1 uppercase font-semibold tracking-wider">
-              {item.label}
-            </span>
           </Link>
         ))}
       </nav>
