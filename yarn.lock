@@ -1443,6 +1443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "@faker-js/faker@npm:10.2.0"
+  checksum: 10c0/72b5048ff32e90b2876560015e177f91b0625dafaaa43631302e413329105be331a1c126c8f7b0f95817cacd51c9222b58e62b6f09f5485522302e6103f19f09
+  languageName: node
+  linkType: hard
+
 "@firebase/ai@npm:2.6.1":
   version: 2.6.1
   resolution: "@firebase/ai@npm:2.6.1"
@@ -6713,6 +6720,7 @@ __metadata:
   resolution: "wephco-brokerage@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.39.1"
+    "@faker-js/faker": "npm:^10.2.0"
     "@tailwindcss/vite": "npm:^4.1.18"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.2.5"

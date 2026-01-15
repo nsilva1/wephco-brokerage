@@ -16,3 +16,27 @@ export interface IUserInfo {
     dealsClosed: number;
     createdAt: string;
 }
+
+export interface IProperty {
+  id?: string;
+  title: string;
+  developer: string;
+  location: string;
+  price: number;
+  yield?: number;
+  status: 'available' | 'sold' | 'pending';
+  description: string;
+  image: string;
+  createdAt?: string;
+}
+
+export interface ILeads {
+    id?: string;
+    name: string;
+    email: string;
+    phone: string;
+    propertyId: string;
+    budget?: number;
+    source: string;
+    createdAt?: string;
+}
