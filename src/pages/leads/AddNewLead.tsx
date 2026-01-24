@@ -1,23 +1,38 @@
-import { useState } from 'react';
-import type { ILeads } from '../../interfaces/UserInterface';
+import { useState, useCallback, useEffect } from 'react';
+import type { ILeads, IProperty } from '../../interfaces/UserInterface';
 import { LeadsService } from '../../services/leadsService';
 import { toast } from 'react-toastify';
 import { Loader } from '../../components/Loader';
 import { PlusCircle } from 'lucide-react';
-import { generateData } from '../../faker/dataGenerator';
-import { PropertySchema } from '../../faker/propertySchema';
+import { PropertyService } from '../../services/propertyService';
 
 const AddNewLead = () => {
-	const [newLead, setNewLead] = useState<ILeads>({} as ILeads);
+	const [newLead, setNewLead] = useState<ILeads | null>(null);
+	const [properties, setProperties] = useState<IProperty[]>([]);
 	const [loading, setLoading] = useState(false);
 
-	const properties = generateData(PropertySchema, 5);
+	const fetchProperties = useCallback(async () => {
+			setLoading(true)
+	
+			try {
+				const response = await PropertyService.getAll();
+				setProperties(response);
+			} catch (error) {
+				console.error('Error fetching properties:', error);
+			} finally {
+				setLoading(false)
+			}
+		}, []);
+
+	const clearForm = () => {
+		setNewLead(null);
+	}
 
 	const handleChange = (input: keyof ILeads, value: string | number) => {
 		setNewLead((prev) => ({
 			...prev,
 			[input]: value,
-		}));
+		} as ILeads));
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -25,8 +40,19 @@ const AddNewLead = () => {
 		setLoading(true);
 
 		try {
-			await LeadsService.create(newLead);
+			const leadPayload: ILeads = {
+				name: newLead?.name!,
+				email: newLead?.email!,
+				phone: newLead?.phone!,
+				budget: newLead?.budget!,
+				propertyId: newLead?.propertyId!,
+				source: newLead?.source!,
+				status:'New Lead'
+			}
+
+			await LeadsService.create(leadPayload);
 			toast.success('Lead added successfully');
+			clearForm();
 		} catch (error) {
 			toast.error('Failed to add lead');
 		} finally {
@@ -34,12 +60,16 @@ const AddNewLead = () => {
 		}
 	};
 
+	useEffect(() => {
+			fetchProperties();
+		}, []);
+
 	return (
 		<div>
 			<div className="my-4">
 				<p className="font-bold text-2xl">Add New Client Lead</p>
 			</div>
-			<div className="bg-white p-4 rounded-lg shadow-md">
+			<div className="bg-white p-10 rounded-lg shadow-md">
 				<form onSubmit={handleSubmit}>
 					<fieldset disabled={loading} className="">
 						<div className="flex flex-col md:flex-row gap-8 my-5">
@@ -50,7 +80,7 @@ const AddNewLead = () => {
 								<input
 									required
 									type="text"
-									value={newLead.name}
+									value={newLead?.name}
 									onChange={(e) => handleChange('name', e.target.value)}
 									className="p-2 rounded-lg w-full border mt-2"
 								/>
@@ -62,7 +92,7 @@ const AddNewLead = () => {
 								<input
 									required
 									type="email"
-									value={newLead.email}
+									value={newLead?.email}
 									onChange={(e) => handleChange('email', e.target.value)}
 									className="p-2 rounded-lg w-full border mt-2"
 								/>
@@ -74,7 +104,7 @@ const AddNewLead = () => {
 								<input
 									required
 									type="text"
-									value={newLead.phone}
+									value={newLead?.phone}
 									onChange={(e) => handleChange('phone', e.target.value)}
 									className="p-2 rounded-lg w-full border mt-2"
 								/>
@@ -87,9 +117,9 @@ const AddNewLead = () => {
 								</label>
 								<input
 									required
-									type="text"
-									value={newLead.budget}
-									onChange={(e) => handleChange('budget', e.target.value)}
+									type="number"
+									value={newLead?.budget}
+									onChange={(e) => handleChange('budget', Number(e.target.value))}
 									className="p-2 rounded-lg w-full border mt-2"
 								/>
 							</div>
@@ -97,7 +127,7 @@ const AddNewLead = () => {
 								<label>
 									Property<span className="text-red-500">*</span>
 								</label>
-								<select className="p-2 rounded-lg w-full border mt-2">
+								<select className="p-2 rounded-lg w-full border mt-2" value={newLead?.propertyId} onChange={(e) => handleChange('propertyId', e.target.value)}>
 									<option value="">-</option>
 									{properties.map((property, idx) => (
 										<option key={idx} value={property.id}>
@@ -110,7 +140,7 @@ const AddNewLead = () => {
 								<label>
 									Lead Source<span className="text-red-500">*</span>
 								</label>
-								<select className="p-2 rounded-lg w-full border mt-2">
+								<select className="p-2 rounded-lg w-full border mt-2" value={newLead?.source} onChange={(e) => handleChange('source', e.target.value)}>
 									<option value="">-</option>
 									<option value="Website">Website</option>
 									<option value="Referral">Referral</option>

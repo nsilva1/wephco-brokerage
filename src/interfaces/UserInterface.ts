@@ -41,7 +41,7 @@ export interface ILeads {
 	propertyId: string;
 	budget?: number;
 	source: string;
-	status: string;
+	status: 'New Lead' | 'Negotiation' | 'Closed';
 	createdAt?: string;
 }
 

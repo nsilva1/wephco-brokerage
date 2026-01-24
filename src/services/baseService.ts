@@ -68,6 +68,15 @@ export class BaseService<T extends DocumentData> {
 
 	// UPDATE
 	async update(id: string, data: Partial<T>) {
+		if (!id) {
+        throw new Error(`[${this.collectionName}] Update Error: Document ID is required.`);
+    }
+
+    // 2. Check: Ensure data is not undefined
+    if (!data) {
+        throw new Error(`[${this.collectionName}] Update Error: Update data is required.`);
+    }
+
 		try {
 			const docRef = doc(db, this.collectionName, id);
 			await updateDoc(docRef, data as DocumentData);

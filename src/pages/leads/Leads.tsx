@@ -1,27 +1,31 @@
 import { useState, useCallback, useEffect } from 'react';
-import type { ILeads } from '../../interfaces/UserInterface';
+import type { ILeads, IProperty } from '../../interfaces/UserInterface';
 import { LeadsService } from '../../services/leadsService';
 import { toast } from 'react-toastify';
 import { Loader } from '../../components/Loader';
 import { PlusCircle, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { generateData } from '../../faker/dataGenerator';
-import { LeadSchema } from '../../faker/leadsSchema';
 import { typography } from '../../styles';
+import { getPropertyNameById } from '../../actions/property';
+import { PropertyService } from '../../services/propertyService';
 
 const Leads = () => {
 	const [leads, setLeads] = useState<ILeads[]>([]);
+	const [properties, setProperties] = useState<IProperty[]>([]);
 	const [loading, setLoading] = useState(false);
 
-	const leadsData = generateData(LeadSchema, 8);
-
-	const populateLeads = () => {
-		setLoading(true);
-		setTimeout(() => {
-			setLeads(leadsData);
-			setLoading(false);
-		}, 1000);
-	};
+	const fetchProperties = useCallback(async () => {
+				setLoading(true)
+		
+				try {
+					const response = await PropertyService.getAll();
+					setProperties(response);
+				} catch (error) {
+					console.error('Error fetching properties:', error);
+				} finally {
+					setLoading(false)
+				}
+			}, []);
 
 	const getLeads = useCallback(async () => {
 	    setLoading(true);
@@ -38,7 +42,7 @@ const Leads = () => {
 
 	useEffect(() => {
 		getLeads()
-		// populateLeads();
+		fetchProperties()
 	}, []);
 
 	return (
@@ -69,7 +73,7 @@ const Leads = () => {
 									<div className="flex flex-col gap-2">
 										<p className={`${typography.h4} font-bold`}>{lead.name}</p>
 										<p className={`${typography.paragraph} text-primary`}>
-											{lead.propertyId}
+											{getPropertyNameById(properties, lead.propertyId)}
 										</p>
 										<div className="flex gap-3">
 											<p className="bg-yellow-50 px-2 py-0.5 text-[clamp(0.7rem,0.9vw,0.8rem)] font-medium tracking-wide rounded-md text-yellow-500">
@@ -80,7 +84,7 @@ const Leads = () => {
 											</p>
 										</div>
 									</div>
-									<Link to={`/lead/${lead.id}`}>
+									<Link to={`/leads/${lead.id}`}>
 										<ChevronRight className="w-5 h-5 text-gray-400 hover:w-8 hover:h-8" />
 									</Link>
 								</div>

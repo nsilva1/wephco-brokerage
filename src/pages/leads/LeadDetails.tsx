@@ -4,9 +4,6 @@ import { LeadsService } from '../../services/leadsService';
 import { PropertyService } from '../../services/propertyService';
 import type { ILeads, IProperty } from '../../interfaces/UserInterface';
 import { toast } from 'react-toastify';
-import { generateData } from '../../faker/dataGenerator';
-import { LeadSchema } from '../../faker/leadsSchema';
-import { PropertySchema } from '../../faker/propertySchema';
 import {
 	Edit2,
 	Mail,
@@ -18,26 +15,45 @@ import {
 } from 'lucide-react';
 import { typography } from '../../styles';
 import { formatCompactNumber } from '../../lib/helperFunctions';
+import { Loader } from '../../components/Loader';
 
 const LeadDetails = () => {
 	const { id } = useParams();
 
-	const dummyLead = generateData(LeadSchema);
-	const dummyProperty = generateData(PropertySchema);
-
 	const [lead, setLead] = useState<ILeads | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [updateLoading, setUpdateLoading] = useState(false);
 	const [property, setProperty] = useState<IProperty | null>(null);
+	const [properties, setProperties] = useState<IProperty[]>([]);
 	const [edit, setEdit] = useState(false);
 
-	const seedLeadData = () => {
-		setLoading(true);
-		setTimeout(() => {
-			setLead(dummyLead);
-			setProperty(dummyProperty);
-			setLoading(false);
-		}, 1000);
-	};
+	const handleChange = (input: keyof ILeads, value: string | number) => {
+		setLead((prev) => ({
+			...prev!,
+			[input]: value,
+		} as ILeads));
+	}
+
+	const updateLead = async () => {
+		if(!edit || !lead){
+			setEdit(true);
+			return;
+		}
+
+		setUpdateLoading(true);
+
+		try {
+			await LeadsService.update(id!, lead);
+			toast.success("Lead information updated successfully");
+			setEdit(false);
+			getLead();
+		} catch (error) {
+			toast.error('Failed to update lead information');
+			console.error(error)
+		} finally {
+			setUpdateLoading(false)
+		}
+	}
 
 	const sendMessage = (phoneNumber: string, leadName: string) => {
 		// logic to send message to lead
@@ -57,34 +73,43 @@ const LeadDetails = () => {
 		window.location.assign(whatsappUrl);
 	};
 
-	// const getPropertyDetails = useCallback(async (propertyId: string) => {
-	//     try {
-	//         const data = await PropertyService.getById(propertyId);
-	//         setProperty(data);
-	//     } catch (error) {
-	//         toast.error("Failed to fetch property details");
-	//     }
-	// }, []);
+	const fetchProperties = useCallback(async ()=> {
+		try {
+		const response = await PropertyService.getAll();
+		setProperties(response);
+		} catch (error) {
+			toast.error("Failed to fetch properties");
+		}
+	}, [])
 
-	// const getLead = useCallback(async () => {
-	//     if (!id) return;
-	//     setLoading(true);
-	//     try {
-	//         const data = await LeadsService.getById(id);
-	//         setLead(data);
-	//         if (data?.propertyId) {
-	//             await getPropertyDetails(data.propertyId);
-	//         }
-	//     } catch (error) {
-	//         toast.error("Failed to fetch lead details");
-	//     } finally {
-	//         setLoading(false);
-	//     }
-	// }, [id]);
+	const getPropertyDetails = useCallback(async (propertyId: string) => {
+	    try {
+	        const data = await PropertyService.getById(propertyId);
+	        setProperty(data);
+	    } catch (error) {
+	        toast.error("Failed to fetch property details");
+	    }
+	}, []);
+
+	const getLead = useCallback(async () => {
+	    if (!id) return;
+	    setLoading(true);
+	    try {
+	        const data = await LeadsService.getById(id);
+	        setLead(data);
+	        if (data?.propertyId) {
+	            await getPropertyDetails(data.propertyId);
+	        }
+	    } catch (error) {
+	        toast.error("Failed to fetch lead details");
+	    } finally {
+	        setLoading(false);
+	    }
+	}, [id]);
 
 	useEffect(() => {
-		// getLead();
-		seedLeadData();
+		getLead();
+		fetchProperties()
 	}, []);
 
 	if (!lead && !loading) {
@@ -123,6 +148,7 @@ const LeadDetails = () => {
 									type="email"
 									className="p-2 border w-full border-gray-300 rounded-lg"
 									value={lead?.email}
+									onChange={(e) => handleChange('email', e.target.value)}
 								/>
 							) : (
 								<p>{lead?.email}</p>
@@ -138,6 +164,7 @@ const LeadDetails = () => {
 									type="text"
 									className="p-2 border w-full border-gray-300 rounded-lg"
 									value={lead?.budget}
+									onChange={(e) => handleChange('budget', Number(e.target.value))}
 								/>
 							) : (
 								<p>{formatCompactNumber(lead?.budget!)}</p>
@@ -148,12 +175,25 @@ const LeadDetails = () => {
 						<Building2 className="w-8 h-8 text-primary" />
 						<div className="flex flex-col">
 							<label className="text-primary">Interest</label>
-							<Link
-								className="cursor-pointer"
+							{
+								edit ? (
+									<select value={lead?.propertyId} onChange={(e) => handleChange('propertyId', e.target.value)} className='p-2 border border-gray-300 rounded-lg w-full'>
+										<option value="">-</option>
+										{properties.map((property, idx) => (
+											<option key={idx} value={property.id}>
+												{property.title}
+											</option>
+										))}
+									</select>
+								) : (
+									<Link
+								className="cursor-pointer font-bold hover:underline"
 								to={`/property/${lead?.propertyId}`}
 							>
 								{property?.title}
 							</Link>
+								)
+							}
 						</div>
 					</div>
 				</div>
@@ -161,10 +201,16 @@ const LeadDetails = () => {
 				<div>
 					<h3 className={`${typography.h5} font-bold`}>Actions</h3>
 					<div className="flex items-center justify-center md:justify-start gap-4 mt-4">
-						<button className="flex gap-2 items-center text-primary bg-amber-100 p-3 rounded-lg text-sm">
+						{
+							updateLoading ? (
+								<Loader label='Updating Lead information...' />
+							) : (
+								<button onClick={updateLead} className="flex gap-2 items-center text-primary bg-amber-100 p-3 rounded-lg text-sm">
 							<RefreshCw />
 							Update Status
 						</button>
+							)
+						}
 						<button
 							onClick={() => sendMessage(lead?.phone!, lead?.name!)}
 							className="flex gap-2 items-center text-white bg-primary p-3 rounded-lg text-sm"
