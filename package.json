@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "format": "prettier --write src/**/*.{ts,tsx} && prettier --write src/*.{ts,tsx} && prettier --write src/**/**/*.{ts,tsx} && prettier --write src/**/**/**/*.{ts,tsx}",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,6 +15,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "firebase": "^12.7.0",
     "lucide-react": "^0.562.0",
+    "prettier": "^3.8.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.11.0",

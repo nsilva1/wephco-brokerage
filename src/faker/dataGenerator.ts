@@ -1,7 +1,5 @@
-
-
 export type EntitySchema<T> = {
-  [K in keyof T]: () => T[K];
+	[K in keyof T]: () => T[K];
 };
 
 /**
@@ -11,18 +9,21 @@ export type EntitySchema<T> = {
  */
 export function generateData<T>(schema: EntitySchema<T>): T;
 export function generateData<T>(schema: EntitySchema<T>, count: number): T[];
-export function generateData<T>(schema: EntitySchema<T>, count?: number): T | T[] {
-  const generateSingle = (): T => {
-    const result = {} as T;
-    for (const key in schema) {
-      result[key] = schema[key]();
-    }
-    return result;
-  };
+export function generateData<T>(
+	schema: EntitySchema<T>,
+	count?: number
+): T | T[] {
+	const generateSingle = (): T => {
+		const result = {} as T;
+		for (const key in schema) {
+			result[key] = schema[key]();
+		}
+		return result;
+	};
 
-  if (count !== undefined) {
-    return Array.from({ length: count }, generateSingle);
-  }
+	if (count !== undefined) {
+		return Array.from({ length: count }, generateSingle);
+	}
 
-  return generateSingle();
+	return generateSingle();
 }

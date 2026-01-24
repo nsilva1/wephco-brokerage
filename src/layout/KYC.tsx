@@ -1,12 +1,10 @@
-import React from 'react'
-import { useAuth } from '../context/AuthContext'
+import React from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const KYC = () => {
-    const { currentUser } = useAuth()
+	const { currentUser } = useAuth();
 
-  return (
-    <div>KYC</div>
-  )
-}
+	return <div>KYC</div>;
+};
 
-export { KYC }
+export { KYC };

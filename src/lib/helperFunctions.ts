@@ -3,64 +3,69 @@
  * Supports Date objects, ISO strings, or Firebase Timestamps.
  */
 export const getRelativeTime = (date: Date | string | number): string => {
-  const now = new Date().getTime();
-  const then = new Date(date).getTime();
-  const diffInSeconds = Math.floor((then - now) / 1000);
+	const now = new Date().getTime();
+	const then = new Date(date).getTime();
+	const diffInSeconds = Math.floor((then - now) / 1000);
 
-  // Define time units in seconds
-  const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
-    { unit: 'year', seconds: 31536000 },
-    { unit: 'month', seconds: 2592000 },
-    { unit: 'week', seconds: 604800 },
-    { unit: 'day', seconds: 86400 },
-    { unit: 'hour', seconds: 3600 },
-    { unit: 'minute', seconds: 60 },
-    { unit: 'second', seconds: 1 },
-  ];
+	// Define time units in seconds
+	const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
+		{ unit: 'year', seconds: 31536000 },
+		{ unit: 'month', seconds: 2592000 },
+		{ unit: 'week', seconds: 604800 },
+		{ unit: 'day', seconds: 86400 },
+		{ unit: 'hour', seconds: 3600 },
+		{ unit: 'minute', seconds: 60 },
+		{ unit: 'second', seconds: 1 },
+	];
 
-  // Find the appropriate unit
-  for (const { unit, seconds } of units) {
-    if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
-      const value = Math.floor(diffInSeconds / seconds);
-      
-      // Use browser's native relative time formatter
-      const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-      return rtf.format(value, unit);
-    }
-  }
+	// Find the appropriate unit
+	for (const { unit, seconds } of units) {
+		if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
+			const value = Math.floor(diffInSeconds / seconds);
 
-  return 'just now';
+			// Use browser's native relative time formatter
+			const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+			return rtf.format(value, unit);
+		}
+	}
+
+	return 'just now';
 };
-
 
 /**
  * Formats a large number into a readable string with K, M, or B suffixes.
  * @param num - The number to format
  * @param digits - Number of decimal places to show (default: 1)
  */
-export const formatCompactNumber = (num: number, digits: number = 1): string => {
-  if (!num) return "0";
+export const formatCompactNumber = (
+	num: number,
+	digits: number = 1
+): string => {
+	if (!num) return '0';
 
-  const lookup = [
-    { value: 1, symbol: "" },
-    { value: 1e3, symbol: "K" },
-    { value: 1e6, symbol: "M" },
-    { value: 1e9, symbol: "B" },
-    { value: 1e12, symbol: "T" }, // Adding Trillion just in case!
-  ];
+	const lookup = [
+		{ value: 1, symbol: '' },
+		{ value: 1e3, symbol: 'K' },
+		{ value: 1e6, symbol: 'M' },
+		{ value: 1e9, symbol: 'B' },
+		{ value: 1e12, symbol: 'T' }, // Adding Trillion just in case!
+	];
 
-  // Find the highest threshold the number meets
-  const item = lookup.slice().reverse().find((item) => {
-    return Math.abs(num) >= item.value;
-  });
+	// Find the highest threshold the number meets
+	const item = lookup
+		.slice()
+		.reverse()
+		.find((item) => {
+			return Math.abs(num) >= item.value;
+		});
 
-  if (!item) return "0";
+	if (!item) return '0';
 
-  // Use Intl to handle rounding and decimal formatting consistently
-  const formatter = new Intl.NumberFormat('en', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: digits,
-  });
+	// Use Intl to handle rounding and decimal formatting consistently
+	const formatter = new Intl.NumberFormat('en', {
+		minimumFractionDigits: 0,
+		maximumFractionDigits: digits,
+	});
 
-  return formatter.format(num / item.value) + item.symbol;
+	return formatter.format(num / item.value) + item.symbol;
 };
