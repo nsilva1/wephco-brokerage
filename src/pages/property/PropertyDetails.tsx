@@ -1,35 +1,44 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PropertyService } from '../../services/propertyService';
 import type { IProperty } from '../../interfaces/UserInterface';
 import { toast } from 'react-toastify';
-import { PropertySchema } from '../../faker/propertySchema';
-import { generateData } from '../../faker/dataGenerator';
+// import { PropertySchema } from '../../faker/propertySchema';
+// import { generateData } from '../../faker/dataGenerator';
 import { ShieldCheck, Mail, ArrowLeft } from 'lucide-react';
 import { formatCompactNumber } from '../../lib/helperFunctions';
+import { Loader } from '../../components/Loader';
 
 const PropertyDetails = () => {
 	const { id } = useParams();
 
-	const property = generateData(PropertySchema);
+	// const property = generateData(PropertySchema);
 
-	//   const [property, setProperty] = React.useState<IProperty>({} as IProperty);
+	  const [property, setProperty] = React.useState<IProperty>({} as IProperty);
+	  const [loading, setLoading] = useState(false)
 
-	//   const getPropertyDetails = useCallback(async () => {
-	//     if (!id) return;
+	  const getPropertyDetails = useCallback(async () => {
+	    if (!id) return;
 
-	//     try {
-	//       const data = await PropertyService.getById(id);
-	//       const propertyData = data || dummyProperty;
-	//       setProperty(propertyData);
-	//     } catch (error) {
-	//       toast.error('Failed to fetch property details.');
-	//     }
-	//   }, [id])
+		setLoading(true)
 
-	//   useEffect(() => {
-	//     getPropertyDetails()
-	//   }, [])
+	    try {
+	      const data = await PropertyService.getById(id);
+	      setProperty(data);
+	    } catch (error) {
+	      toast.error('Failed to fetch property details.');
+	    } finally {
+			setLoading(false)
+		}
+	  }, [id])
+
+	  useEffect(() => {
+	    getPropertyDetails()
+	  }, [])
+
+	  if(loading){
+		return <Loader label='Loading Property Details' />
+	  }
 
 	return (
 		<div className="md:p-8 w-full mt-4">

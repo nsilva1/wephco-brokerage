@@ -40,7 +40,7 @@ function App() {
 						}
 					/>
 					<Route
-						path="/property/:id"
+						path="/properties/:id"
 						element={
 							<Layout>
 								<PropertyDetails />
@@ -48,7 +48,7 @@ function App() {
 						}
 					/>
 					<Route
-						path="/property/new"
+						path="/properties/new"
 						element={
 							<Layout>
 								<AddNewProperty />

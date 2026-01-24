@@ -61,7 +61,7 @@ const Home = () => {
 						Find Property
 					</button>
 					<button
-						onClick={() => navigate('/property/new')}
+						onClick={() => navigate('/properties/new')}
 						className="bg-white text-primary py-2 px-4 rounded-lg flex-1 cursor-pointer text-[clamp(0.75rem,1.5vw,1.25rem)] flex gap-3 justify-center items-center border"
 					>
 						<PlusCircle className="w-5 h-5" /> Add Property

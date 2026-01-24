@@ -23,22 +23,22 @@ const Leads = () => {
 		}, 1000);
 	};
 
-	// const getLeads = useCallback(async () => {
-	//     setLoading(true);
+	const getLeads = useCallback(async () => {
+	    setLoading(true);
 
-	//     try {
-	//         const data = await LeadsService.getAll();
-	//         setLeads(data);
-	//     } catch (error) {
-	//         toast.error("Failed to fetch leads");
-	//     } finally {
-	//         setLoading(false)
-	//     }
-	// }, [])
+	    try {
+	        const data = await LeadsService.getAll();
+	        setLeads(data);
+	    } catch (error) {
+	        toast.error("Failed to fetch leads");
+	    } finally {
+	        setLoading(false)
+	    }
+	}, [])
 
 	useEffect(() => {
-		// getLeads()
-		populateLeads();
+		getLeads()
+		// populateLeads();
 	}, []);
 
 	return (

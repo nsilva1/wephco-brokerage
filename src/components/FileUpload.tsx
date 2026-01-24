@@ -14,7 +14,7 @@ interface FileUploadProps {
 const FileUpload: React.FC<FileUploadProps> = ({
 	onFilesSelected,
 	accept = 'image/*',
-	multiple = true,
+	multiple = false,
 }) => {
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
