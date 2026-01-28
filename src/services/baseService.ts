@@ -41,10 +41,11 @@ export class BaseService<T extends DocumentData> {
 	}
 
 	async getAll(userId?: string) {
-		const q = query(this.collectionRef, where('userId', '==', userId))
-
+		
 		try {
 			if(userId){
+				const q = query(this.collectionRef, where('userId', '==', userId))
+
 				const snapshot = await getDocs(q);
 				return snapshot.docs.map((doc) => ({
 				...doc.data(),

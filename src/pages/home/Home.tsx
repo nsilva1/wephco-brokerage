@@ -39,7 +39,7 @@ const Home = () => {
 							Active Leads
 						</p>
 						<p className="font-semibold text-[clamp(1rem,2vw,1.75rem)] truncate">
-							{leads.length}
+							{userInfo?.activeLeads ?? 0}
 						</p>
 					</div>
 					<div className="flex-1 min-w-0 bg-white p-4 rounded-lg shadow-md cursor-pointer text-primary hover:bg-primary hover:text-white transition-colors flex flex-col justify-center">

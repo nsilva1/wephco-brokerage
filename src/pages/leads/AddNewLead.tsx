@@ -9,7 +9,16 @@ import { useAuth } from '../../context/AuthContext';
 import { useProperties } from '../../hooks/properties';
 
 const AddNewLead = () => {
-	const [newLead, setNewLead] = useState<ILeads | null>(null);
+	const [newLead, setNewLead] = useState<ILeads>({
+	name: '',
+	email: '',
+	phone: '',
+	userId: '',
+	propertyId: '',
+	budget: 0,
+	source: '',
+	status: 'New Lead',
+	});
 	// const [properties, setProperties] = useState<IProperty[]>([]);
 	const [loading, setLoading] = useState(false);
 
@@ -30,7 +39,16 @@ const AddNewLead = () => {
 	// 	}, []);
 
 	const clearForm = () => {
-		setNewLead(null);
+		setNewLead({
+	name: '',
+	email: '',
+	phone: '',
+	userId: '',
+	propertyId: '',
+	budget: 0,
+	source: '',
+	status: 'New Lead',
+	});
 	}
 
 	const handleChange = (input: keyof ILeads, value: string | number) => {

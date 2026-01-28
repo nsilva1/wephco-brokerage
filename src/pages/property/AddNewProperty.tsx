@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { ArrowLeft, Building, Trash2 } from 'lucide-react';
 import FileUpload from '../../components/FileUpload';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PropertyService } from '../../services/propertyService';
 import type { IProperty } from '../../interfaces/UserInterface';
 import { uploadPropertyImage } from '../../actions/property';
 import { toast } from 'react-toastify';
 import { Loader } from '../../components/Loader';
+import { useProperties } from '../../hooks/properties';
 
 interface PreviewFile extends File {
 	preview: string;
@@ -16,6 +17,9 @@ const AddNewProperty = () => {
 	const [files, setFiles] = useState<PreviewFile[]>([]);
 	const [propertyData, setPropertyData] = useState<IProperty | null>(null)
 	const [loading, setLoading] = useState(false)
+
+	const { reLoadProperties } = useProperties()
+	const navigate = useNavigate()
 
 	const handleChange = (input: keyof IProperty, value: string | number) => {
 		setPropertyData((prev) => ({
@@ -68,6 +72,8 @@ const AddNewProperty = () => {
 		await PropertyService.create(newProperty);
 		toast.success('Property submitted successfully!');
 		clearForm();
+		await reLoadProperties()
+		navigate('/properties')
 		} catch (error) {
 			console.error('Error submitting property:', error);
 			toast.error('Failed to submit property.');

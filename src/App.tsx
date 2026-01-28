@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 import { ToastContainer } from 'react-toastify';
+import { ReloadPrompt } from './components/ReloadPrompt';
 
 import { Layout } from './layout/Layout';
 
@@ -23,8 +24,10 @@ function App() {
 	return (
 		<AuthProvider>
 			<DataProvider>
-			<ToastContainer />
+				
+				<ToastContainer />
 			<BrowserRouter>
+			<ReloadPrompt />
 				<Routes>
 					<Route path="/" element={<Login />} />
 					<Route path="/login" element={<Login />} />

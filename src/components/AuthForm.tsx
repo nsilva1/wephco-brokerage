@@ -6,7 +6,13 @@ import { toast } from 'react-toastify';
 // import { Loader } from './Loader'
 
 const AuthForm = ({ login }: { login: boolean }) => {
-	const [user, setUser] = useState<INewUser>({} as INewUser);
+	const [user, setUser] = useState<INewUser>({
+		email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    role: 'Agent',
+	});
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
