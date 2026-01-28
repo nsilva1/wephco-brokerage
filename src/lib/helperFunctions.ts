@@ -2,34 +2,41 @@
  * Calculates the relative time difference between a given date and now.
  * Supports Date objects, ISO strings, or Firebase Timestamps.
  */
-export const getRelativeTime = (date: Date | string | number): string => {
-	const now = new Date().getTime();
-	const then = new Date(date).getTime();
-	const diffInSeconds = Math.floor((then - now) / 1000);
+export const getRelativeTime = (date: any): string => {
+    // 1. Handle Firestore Timestamp objects
+    let dateObj: Date;
+    if (date && typeof date.toDate === 'function') {
+        dateObj = date.toDate();
+    } else {
+        dateObj = new Date(date);
+    }
 
-	// Define time units in seconds
-	const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
-		{ unit: 'year', seconds: 31536000 },
-		{ unit: 'month', seconds: 2592000 },
-		{ unit: 'week', seconds: 604800 },
-		{ unit: 'day', seconds: 86400 },
-		{ unit: 'hour', seconds: 3600 },
-		{ unit: 'minute', seconds: 60 },
-		{ unit: 'second', seconds: 1 },
-	];
+    // 2. Fallback for invalid dates
+    if (isNaN(dateObj.getTime())) return 'unknown time';
 
-	// Find the appropriate unit
-	for (const { unit, seconds } of units) {
-		if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
-			const value = Math.floor(diffInSeconds / seconds);
+    const now = new Date().getTime();
+    const then = dateObj.getTime();
+    const diffInSeconds = Math.floor((then - now) / 1000);
 
-			// Use browser's native relative time formatter
-			const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-			return rtf.format(value, unit);
-		}
-	}
+    const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
+        { unit: 'year', seconds: 31536000 },
+        { unit: 'month', seconds: 2592000 },
+        { unit: 'week', seconds: 604800 },
+        { unit: 'day', seconds: 86400 },
+        { unit: 'hour', seconds: 3600 },
+        { unit: 'minute', seconds: 60 },
+        { unit: 'second', seconds: 1 },
+    ];
 
-	return 'just now';
+    for (const { unit, seconds } of units) {
+        if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
+            const value = Math.floor(diffInSeconds / seconds);
+            const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+            return rtf.format(value, unit);
+        }
+    }
+
+    return 'just now';
 };
 
 /**
@@ -68,4 +75,11 @@ export const formatCompactNumber = (
 	});
 
 	return formatter.format(num / item.value) + item.symbol;
+};
+
+export const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
 };

@@ -1,28 +1,33 @@
-import { useState, useCallback, useEffect } from 'react';
-import type { ILeads, IProperty } from '../../interfaces/UserInterface';
+import { useState } from 'react';
+import type { ILeads } from '../../interfaces/UserInterface';
 import { LeadsService } from '../../services/leadsService';
 import { toast } from 'react-toastify';
 import { Loader } from '../../components/Loader';
 import { PlusCircle } from 'lucide-react';
-import { PropertyService } from '../../services/propertyService';
+// import { PropertyService } from '../../services/propertyService';
+import { useAuth } from '../../context/AuthContext';
+import { useProperties } from '../../hooks/properties';
 
 const AddNewLead = () => {
 	const [newLead, setNewLead] = useState<ILeads | null>(null);
-	const [properties, setProperties] = useState<IProperty[]>([]);
+	// const [properties, setProperties] = useState<IProperty[]>([]);
 	const [loading, setLoading] = useState(false);
 
-	const fetchProperties = useCallback(async () => {
-			setLoading(true)
+	const { currentUser } = useAuth()
+	const { properties } = useProperties()
+
+	// const fetchProperties = useCallback(async () => {
+	// 		setLoading(true)
 	
-			try {
-				const response = await PropertyService.getAll();
-				setProperties(response);
-			} catch (error) {
-				console.error('Error fetching properties:', error);
-			} finally {
-				setLoading(false)
-			}
-		}, []);
+	// 		try {
+	// 			const response = await PropertyService.getAll();
+	// 			setProperties(response);
+	// 		} catch (error) {
+	// 			console.error('Error fetching properties:', error);
+	// 		} finally {
+	// 			setLoading(false)
+	// 		}
+	// 	}, []);
 
 	const clearForm = () => {
 		setNewLead(null);
@@ -44,6 +49,7 @@ const AddNewLead = () => {
 				name: newLead?.name!,
 				email: newLead?.email!,
 				phone: newLead?.phone!,
+				userId: currentUser?.uid!,
 				budget: newLead?.budget!,
 				propertyId: newLead?.propertyId!,
 				source: newLead?.source!,
@@ -60,9 +66,6 @@ const AddNewLead = () => {
 		}
 	};
 
-	useEffect(() => {
-			fetchProperties();
-		}, []);
 
 	return (
 		<div>

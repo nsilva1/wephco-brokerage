@@ -5,6 +5,7 @@ import type { EntitySchema } from './dataGenerator';
 export const LeadSchema: EntitySchema<ILeads> = {
 	id: () => faker.string.uuid(),
 	name: () => faker.person.fullName(),
+	userId: () => faker.string.alphanumeric(4),
 	email: () => faker.internet.email(),
 	phone: () => faker.phone.number(),
 	propertyId: () => `PROP-${faker.string.alphanumeric(5).toUpperCase()}`,
@@ -18,6 +19,6 @@ export const LeadSchema: EntitySchema<ILeads> = {
 			'Website',
 		]),
 	status: () =>
-		faker.helpers.arrayElement(['New Lead', 'Negotiation', 'Closed', 'Lost']),
+		faker.helpers.arrayElement(['New Lead', 'Negotiation', 'Closed']),
 	createdAt: () => faker.date.recent().toISOString(),
 };

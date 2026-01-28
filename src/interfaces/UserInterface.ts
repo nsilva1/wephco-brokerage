@@ -38,6 +38,7 @@ export interface ILeads {
 	name: string;
 	email: string;
 	phone: string;
+	userId: string;
 	propertyId: string;
 	budget?: number;
 	source: string;
@@ -57,9 +58,10 @@ export interface ITransaction {
 	userId: string;
 	recipientId?: string;
 	dealId?: string;
-	type: "deposit" | "withdrawal" | "income" | "escrow_lock";
+	type: "Deposit" | "Withdrawal" | "Income" | "Escrow";
+	transactionType: "Credit" | "Debit";
 	amount: number;
-	status: "pending" | "completed" | "failed";
+	status: "Pending" | "Completed" | "Failed";
 	description: string;
 	createdAt?: string;
 }

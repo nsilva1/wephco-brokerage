@@ -1,49 +1,16 @@
-import { useState, useCallback, useEffect } from 'react';
-import type { ILeads, IProperty } from '../../interfaces/UserInterface';
-import { LeadsService } from '../../services/leadsService';
-import { toast } from 'react-toastify';
 import { Loader } from '../../components/Loader';
 import { PlusCircle, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { typography } from '../../styles';
 import { getPropertyNameById } from '../../actions/property';
-import { PropertyService } from '../../services/propertyService';
+import { useProperties } from '../../hooks/properties';
+import { useLeads } from '../../hooks/leads';
 
 const Leads = () => {
-	const [leads, setLeads] = useState<ILeads[]>([]);
-	const [properties, setProperties] = useState<IProperty[]>([]);
-	const [loading, setLoading] = useState(false);
+	
+	const { properties } = useProperties()
+	const { leads, loading } = useLeads()
 
-	const fetchProperties = useCallback(async () => {
-				setLoading(true)
-		
-				try {
-					const response = await PropertyService.getAll();
-					setProperties(response);
-				} catch (error) {
-					console.error('Error fetching properties:', error);
-				} finally {
-					setLoading(false)
-				}
-			}, []);
-
-	const getLeads = useCallback(async () => {
-	    setLoading(true);
-
-	    try {
-	        const data = await LeadsService.getAll();
-	        setLeads(data);
-	    } catch (error) {
-	        toast.error("Failed to fetch leads");
-	    } finally {
-	        setLoading(false)
-	    }
-	}, [])
-
-	useEffect(() => {
-		getLeads()
-		fetchProperties()
-	}, []);
 
 	return (
 		<div>

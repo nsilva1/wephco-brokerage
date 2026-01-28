@@ -4,6 +4,8 @@ import {
 	addDoc,
 	getDoc,
 	getDocs,
+	query,
+	where,
 	updateDoc,
 	deleteDoc,
 	doc,
@@ -38,13 +40,24 @@ export class BaseService<T extends DocumentData> {
 		}
 	}
 
-	async getAll() {
+	async getAll(userId?: string) {
+		const q = query(this.collectionRef, where('userId', '==', userId))
+
 		try {
-			const snapshot = await getDocs(this.collectionRef);
+			if(userId){
+				const snapshot = await getDocs(q);
+				return snapshot.docs.map((doc) => ({
+				...doc.data(),
+				id: doc.id,
+			})) as (T & { id: string })[];
+			} else {
+				const snapshot = await getDocs(this.collectionRef);
 			return snapshot.docs.map((doc) => ({
 				...doc.data(),
 				id: doc.id,
 			})) as (T & { id: string })[];
+			}
+			
 		} catch (error: any) {
 			throw new Error(
 				`[${this.collectionName}] Get All Error: ${error.message}`

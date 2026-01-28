@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { DataProvider } from './context/DataContext';
 import { ToastContainer } from 'react-toastify';
 
 import { Layout } from './layout/Layout';
@@ -13,10 +14,15 @@ import { AddNewProperty } from './pages/property/AddNewProperty';
 import { Leads } from './pages/leads/Leads';
 import { LeadDetails } from './pages/leads/LeadDetails';
 import { AddNewLead } from './pages/leads/AddNewLead';
+import { Wallet } from './pages/wallet/Wallet';
+import { RequestPayment } from './pages/wallet/RequestPayment';
+import { LearningCenter } from './pages/learning_center/LearningCenter';
+
 
 function App() {
 	return (
 		<AuthProvider>
+			<DataProvider>
 			<ToastContainer />
 			<BrowserRouter>
 				<Routes>
@@ -79,8 +85,19 @@ function App() {
 							</Layout>
 						}
 					/>
+					<Route 
+						path='/wallet'
+						element={
+							<Layout>
+								<Wallet />
+							</Layout>
+						}
+					/>
+					<Route path='/wallet/request-payment' element={<Layout><RequestPayment /></Layout>} />
+					<Route path='/learning-center' element={<Layout><LearningCenter /></Layout>} />
 				</Routes>
 			</BrowserRouter>
+			</DataProvider>
 		</AuthProvider>
 	);
 }

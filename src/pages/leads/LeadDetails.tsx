@@ -16,6 +16,7 @@ import {
 import { typography } from '../../styles';
 import { formatCompactNumber } from '../../lib/helperFunctions';
 import { Loader } from '../../components/Loader';
+import { useProperties } from '../../hooks/properties';
 
 const LeadDetails = () => {
 	const { id } = useParams();
@@ -24,8 +25,10 @@ const LeadDetails = () => {
 	const [loading, setLoading] = useState(false);
 	const [updateLoading, setUpdateLoading] = useState(false);
 	const [property, setProperty] = useState<IProperty | null>(null);
-	const [properties, setProperties] = useState<IProperty[]>([]);
+	// const [properties, setProperties] = useState<IProperty[]>([]);
 	const [edit, setEdit] = useState(false);
+
+	const { properties } = useProperties()
 
 	const handleChange = (input: keyof ILeads, value: string | number) => {
 		setLead((prev) => ({
@@ -73,14 +76,14 @@ const LeadDetails = () => {
 		window.location.assign(whatsappUrl);
 	};
 
-	const fetchProperties = useCallback(async ()=> {
-		try {
-		const response = await PropertyService.getAll();
-		setProperties(response);
-		} catch (error) {
-			toast.error("Failed to fetch properties");
-		}
-	}, [])
+	// const fetchProperties = useCallback(async ()=> {
+	// 	try {
+	// 	const response = await PropertyService.getAll();
+	// 	setProperties(response);
+	// 	} catch (error) {
+	// 		toast.error("Failed to fetch properties");
+	// 	}
+	// }, [])
 
 	const getPropertyDetails = useCallback(async (propertyId: string) => {
 	    try {
@@ -109,7 +112,7 @@ const LeadDetails = () => {
 
 	useEffect(() => {
 		getLead();
-		fetchProperties()
+
 	}, []);
 
 	if (!lead && !loading) {
@@ -188,7 +191,7 @@ const LeadDetails = () => {
 								) : (
 									<Link
 								className="cursor-pointer font-bold hover:underline"
-								to={`/property/${lead?.propertyId}`}
+								to={`/properties/${lead?.propertyId}`}
 							>
 								{property?.title}
 							</Link>

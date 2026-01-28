@@ -1,38 +1,20 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 // import { generateData } from '../../faker/dataGenerator';
 // import { PropertySchema } from '../../faker/propertySchema';
 import { Search } from 'lucide-react';
 import { formatCompactNumber } from '../../lib/helperFunctions';
 import { Link } from 'react-router-dom';
-import { PropertyService } from '../../services/propertyService';
-import type { IProperty } from '../../interfaces/UserInterface';
 import { Loader } from '../../components/Loader';
+import { useProperties } from '../../hooks/properties';
 
 const Properties = () => {
-	// const dummyProperties = generateData(PropertySchema, 9);
-	// const filteredProperties = dummyProperties;
 
-	const [properties, setProperties] = useState<IProperty[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [debouncedTerm, setDebouncedTerm] = useState<string>('');
-	const [loading, setLoading] = useState(false)
+	
 
-	const fetchProperties = useCallback(async () => {
-		setLoading(true)
+    const { properties, loading } = useProperties()
 
-		try {
-			const response = await PropertyService.getAll();
-			setProperties(response);
-		} catch (error) {
-			console.error('Error fetching properties:', error);
-		} finally {
-			setLoading(false)
-		}
-	}, []);
-
-	useEffect(() => {
-		fetchProperties();
-	}, []);
 
 	useEffect(() => {
         const timer = setTimeout(() => {

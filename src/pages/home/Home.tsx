@@ -1,19 +1,21 @@
 import { useAuth } from '../../context/AuthContext';
+// import { useData } from '../../context/DataContext';
 import { PlusCircle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { generateData } from '../../faker/dataGenerator';
-import { LeadSchema } from '../../faker/leadsSchema';
 import {
 	getRelativeTime,
 	formatCompactNumber,
 } from '../../lib/helperFunctions';
+import { Loader } from '../../components/Loader';
+import { useLeads } from '../../hooks/leads';
+
 
 const Home = () => {
 	const { currentUser, userInfo } = useAuth();
+	const { leads, loading } = useLeads()
 
 	const navigate = useNavigate();
 
-	const dummyLeads = generateData(LeadSchema, 3);
 
 	return (
 		<div className="font-outfit">
@@ -37,7 +39,7 @@ const Home = () => {
 							Active Leads
 						</p>
 						<p className="font-semibold text-[clamp(1rem,2vw,1.75rem)] truncate">
-							{userInfo?.activeLeads ?? 0}
+							{leads.length}
 						</p>
 					</div>
 					<div className="flex-1 min-w-0 bg-white p-4 rounded-lg shadow-md cursor-pointer text-primary hover:bg-primary hover:text-white transition-colors flex flex-col justify-center">
@@ -82,8 +84,16 @@ const Home = () => {
 						View All
 					</Link>
 				</div>
-				<div className="mt-4 flex flex-col gap-4">
-					{dummyLeads.map((lead, idx) => (
+				{
+					loading ? (
+						<div className='mt-10 flex justify-center items-center'><Loader label='Loading leads' /></div>
+					) : leads.length === 0 ? (
+						<div>
+							<p className="mt-4 text-center text-gray-500">No active leads available.</p>
+						</div>
+					) : (
+						<div className="mt-4 flex flex-col gap-4">
+					{leads.map((lead, idx) => (
 						<div
 							key={idx}
 							className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-stone-100 flex justify-between items-start md:items-center gap-2 hover:shadow-md transition-shadow cursor-pointer"
@@ -93,7 +103,7 @@ const Home = () => {
 									{lead.name}
 								</p>
 								<p className="text-primary text-[clamp(0.75rem,1.2vw,0.875rem)] font-medium">
-									{getRelativeTime(lead.createdAt!)}{' '}
+									{getRelativeTime(lead.createdAt!)}
 									<span className="text-stone-300 mx-1">•</span> {lead.status}
 								</p>
 							</div>
@@ -105,6 +115,8 @@ const Home = () => {
 						</div>
 					))}
 				</div>
+					)
+				}
 			</div>
 		</div>
 	);
