@@ -1,6 +1,6 @@
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { useEffect, useState } from 'react';
-import { X, Download, RefreshCw } from 'lucide-react';
+import { X, Download, RefreshCw, CheckCircle2 } from 'lucide-react';
 import type { BeforeInstallPromptEvent } from '../interfaces/UserInterface';
 import { useLocation } from 'react-router-dom';
 
@@ -13,9 +13,9 @@ const ReloadPrompt = () => {
 
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const location = useLocation();
 
-  const location = useLocation()
-
+  // 1. Handle Install Prompt Event
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
@@ -24,94 +24,97 @@ const ReloadPrompt = () => {
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
+
+  // 2. Auto-dismiss "Offline Ready" toast after 3 seconds
+  useEffect(() => {
+    if (offlineReady) {
+      const timer = setTimeout(() => setOfflineReady(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [offlineReady, setOfflineReady]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
     setShowInstallPrompt(false);
   };
 
-  const close = () => {
-    setOfflineReady(false);
-    setNeedRefresh(false);
-    setShowInstallPrompt(false);
-  };
-
-  if (!offlineReady && !needRefresh && !showInstallPrompt) return null;
-
+  // Don't show anything on auth pages
   if (['/login', '/register'].includes(location.pathname)) return null;
 
+  // Don't render empty container
+  if (!offlineReady && !needRefresh && !showInstallPrompt) return null;
+
   return (
-    <div className='fixed bottom-0 right-0 p-4 m-4 z-50 flex flex-col gap-2 max-w-md w-full md:w-auto'>
-      {/* Install Prompt */}
-      {showInstallPrompt && (
-        <div className='bg-primary text-white p-4 rounded-xl shadow-lg flex items-center justify-between gap-4 animate-in slide-in-from-bottom-5'>
-          <div className='flex items-center gap-3'>
-            <Download size={20} />
-            <div className='flex flex-col'>
-              <span className='font-bold text-sm'>Install App</span>
-              <span className='text-xs text-gray-300'>
-                Add to Home Screen for better experience
-              </span>
-            </div>
-          </div>
-          <div className='flex items-center gap-2'>
-            <button
-              onClick={handleInstallClick}
-              className='bg-white text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-100 transition-colors'
-            >
-              Install
-            </button>
-            <button
-              onClick={() => setShowInstallPrompt(false)}
-              className='p-1 hover:bg-white/10 rounded-full'
-            >
-              <X size={16} />
-            </button>
+    <div className='fixed bottom-4 right-4 z-50 flex flex-col gap-3 max-w-sm w-full'>
+      
+      {/* 1. Offline Ready Toast (Auto-dismissing) */}
+      {offlineReady && (
+        <div className='bg-white border border-green-200 p-3 rounded-lg shadow-lg flex items-center gap-3 animate-in slide-in-from-bottom-5 fade-in duration-300'>
+          <CheckCircle2 size={20} className="text-green-500" />
+          <div className='flex flex-col'>
+            <span className='font-semibold text-gray-800 text-sm'>Ready for offline use</span>
           </div>
         </div>
       )}
 
-      {/* Offline Ready Toast */}
-      {offlineReady && (
-        <div className='bg-white border border-gray-200 p-4 rounded-xl shadow-lg flex items-center justify-between gap-4 animate-in slide-in-from-bottom-5'>
-          <div className='flex flex-col'>
-            <span className='font-bold text-gray-900 text-sm'>App ready to work offline</span>
+      {/* 2. Update Prompt (High Priority) */}
+      {needRefresh && (
+        <div className='bg-primary text-white p-4 rounded-xl shadow-xl flex flex-col gap-3 animate-in slide-in-from-bottom-5 duration-300'>
+          <div className='flex items-start justify-between'>
+            <div className='flex items-center gap-3'>
+              <RefreshCw size={20} className='animate-spin' />
+              <div>
+                <p className='font-bold text-sm'>Update Available</p>
+                <p className='text-xs text-green-100 mt-0.5'>A new version is available.</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setNeedRefresh(false)} 
+              className='p-1 hover:bg-white/20 rounded-full transition-colors'
+            >
+              <X size={16} />
+            </button>
           </div>
-          <button onClick={close} className='p-1 hover:bg-gray-100 rounded-full text-gray-400'>
-            <X size={16} />
+          <button
+            onClick={() => updateServiceWorker(true)}
+            className='w-full bg-white text-primary py-2 rounded-lg text-sm font-bold hover:bg-green-50 transition-colors shadow-sm'
+          >
+            Refresh Now
           </button>
         </div>
       )}
 
-      {/* New Content / Refresh Toast */}
-      {needRefresh && (
-        <div className='bg-primary text-white p-4 rounded-xl shadow-lg flex items-center justify-between gap-4 animate-in slide-in-from-bottom-5'>
-          <div className='flex items-center gap-3'>
-            <RefreshCw size={20} className='animate-spin' />
-            <div className='flex flex-col'>
-              <span className='font-bold text-sm'>New content available</span>
-              <span className='text-xs text-gray-300'>Click on reload button to update.</span>
+      {/* 3. Install Prompt (Show only if no update pending to reduce clutter) */}
+      {showInstallPrompt && !needRefresh && (
+        <div className='bg-primary text-white p-4 rounded-xl shadow-xl flex flex-col gap-3 animate-in slide-in-from-bottom-5 duration-300'>
+          <div className='flex items-start justify-between'>
+            <div className='flex items-center gap-3'>
+              <Download size={20} className="text-gray-300" />
+              <div>
+                <p className='font-bold text-sm'>Install App</p>
+                <p className='text-xs text-gray-400 mt-0.5'>Add to Home Screen for the best experience.</p>
+              </div>
             </div>
-          </div>
-          <div className='flex items-center gap-2'>
-            <button
-              onClick={() => updateServiceWorker(true)}
-              className='bg-white text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-gray-100 transition-colors'
+            <button 
+              onClick={() => setShowInstallPrompt(false)} 
+              className='p-1 hover:bg-white/10 rounded-full transition-colors'
             >
-              Reload
-            </button>
-            <button onClick={close} className='p-1 hover:bg-white/10 rounded-full'>
               <X size={16} />
             </button>
           </div>
+          <button
+            onClick={handleInstallClick}
+            className='w-full bg-white text-gray-900 py-2 rounded-lg text-sm font-bold hover:bg-gray-100 transition-colors shadow-sm'
+          >
+            Install
+          </button>
         </div>
       )}
     </div>

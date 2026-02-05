@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
+import { PWAProvider } from './context/PWAContext';
 import { ToastContainer } from 'react-toastify';
 import { ReloadPrompt } from './components/ReloadPrompt';
 
@@ -9,6 +10,7 @@ import { Layout } from './layout/Layout';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { Home } from './pages/home/Home';
+import { Dashboard } from './pages/dashboard/Dashboard';
 import { Properties } from './pages/property/Properties';
 import { PropertyDetails } from './pages/property/PropertyDetails';
 import { AddNewProperty } from './pages/property/AddNewProperty';
@@ -24,19 +26,19 @@ function App() {
 	return (
 		<AuthProvider>
 			<DataProvider>
-				
+				<PWAProvider>
 				<ToastContainer />
 			<BrowserRouter>
 			<ReloadPrompt />
 				<Routes>
-					<Route path="/" element={<Login />} />
+					<Route path="/" element={<Home />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/register" element={<Register />} />
 					<Route
 						path="/home"
 						element={
 							<Layout>
-								<Home />
+								<Dashboard />
 							</Layout>
 						}
 					/>
@@ -100,6 +102,7 @@ function App() {
 					<Route path='/learning-center' element={<Layout><LearningCenter /></Layout>} />
 				</Routes>
 			</BrowserRouter>
+			</PWAProvider>
 			</DataProvider>
 		</AuthProvider>
 	);
