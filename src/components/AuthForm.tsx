@@ -4,6 +4,7 @@ import type { INewUser } from '../interfaces/UserInterface';
 import { registerUser, loginUser } from '../actions/auth';
 import { toast } from 'react-toastify';
 // import { Loader } from './Loader'
+import logo from '../assets/images/logo.png'
 
 const AuthForm = ({ login }: { login: boolean }) => {
 	const [user, setUser] = useState<INewUser>({
@@ -69,7 +70,10 @@ const AuthForm = ({ login }: { login: boolean }) => {
 
 	return (
 		<div className="flex flex-col items-center gap-4">
-			<h3 className="text-3xl font-medium">Wephco Brokerage</h3>
+			<h3 className=" flex flex-col gap-5">
+				<img src={logo} alt='Wephco Logo' className='w-full h-40' />
+				<h3 className='text-3xl font-medium text-center'>Wephco Brokerage</h3>
+			</h3>
 			<div className="shadow-2xl max-w-xl md:min-w-xl rounded-md p-10">
 				<h1 className="text-2xl font-bold text-center">
 					{login ? 'Login' : 'Register'}
@@ -206,7 +210,7 @@ const AuthForm = ({ login }: { login: boolean }) => {
 							<p className="text-sm mt-4 text-center">
 								Already have an account?{' '}
 								<Link
-									to="/"
+									to="/login"
 									className="text-primary font-medium hover:underline"
 								>
 									Login

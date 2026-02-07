@@ -15,9 +15,17 @@ const Header = () => {
 				</div>
 			</div>
 			<div className="flex items-center gap-5">
-				<div className="py-2 px-3 bg-green-50 text-primary rounded-lg font-semibold">
-					{userInfo?.role}
-				</div>
+				{
+					userInfo?.role === 'Investor' ? (
+						<div className="py-2 px-3 bg-amber-100 text-amber-800 rounded-lg font-semibold">
+							{userInfo?.role}
+						</div>
+					) : (
+						<div className="py-2 px-3 bg-green-50 text-primary rounded-lg font-semibold">
+							{userInfo?.role}
+						</div>
+					)
+				}
 				<Bell className="h-5 w-5 text-stone-500" />
 				<button onClick={logout} className='cursor-pointer hover:bg-stone-100 hover:rounded-lg p-2'>
 					<LogOut className='h-5 w-5 text-black' />

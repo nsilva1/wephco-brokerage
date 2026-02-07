@@ -1,13 +1,20 @@
 import { useProperties } from '../../hooks/properties'
-import { Calendar, Send } from 'lucide-react'
+import { Calendar, Send, ArrowLeft } from 'lucide-react'
 import { typography } from '../../styles'
+import { useNavigate } from 'react-router-dom'
 
 const RequestPayment = () => {
 
     const { properties } = useProperties()
 
+    const navigate = useNavigate()
+
   return (
     <div className="md:p-8 w-full mt-4 font-outfit">
+        <div className='flex gap-1 mb-8 cursor-pointer text-gray-400' onClick={() => navigate(-1)}>
+            <ArrowLeft />
+            Back
+        </div>
         <h4 className={`${typography.h3} font-bold`}>Request Client Payment</h4>
         <div className="md:p-8 w-full my-10">
             <div className='bg-white w-full rounded-lg p-5 shadow-md'>

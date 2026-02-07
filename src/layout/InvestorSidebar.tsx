@@ -1,21 +1,14 @@
-import { navItems } from '../lib/constants';
+import { investorNavItems } from '../lib/constants';
 import { NavLink } from 'react-router-dom';
-import { InvestorSidebar } from './InvestorSidebar';
-import { useAuth } from '../context/AuthContext';
 
-const Sidebar = () => {
-	const { userInfo } = useAuth()
-
+const InvestorSidebar = () => {
 	return (
-		<div>
-			{
-				userInfo?.role === 'Investor' ? (<InvestorSidebar />) : (
-					<aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 flex-col border-r border-stone-200 bg-white p-4">
+		<aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 flex-col border-r border-stone-200 bg-white p-4">
 			<div className="mb-8 px-2 font-bold text-xl text-primary">
 				Wephco Brokerage
 			</div>
 			<nav className="flex flex-col gap-2">
-				{navItems.map((item, idx) => (
+				{investorNavItems.map((item, idx) => (
 					<NavLink
 						key={idx}
 						to={item.path}className={({ isActive }) =>
@@ -33,10 +26,7 @@ const Sidebar = () => {
 				))}
 			</nav>
 		</aside>
-				)
-			}
-		</div>
 	);
 };
 
-export { Sidebar };
+export { InvestorSidebar };

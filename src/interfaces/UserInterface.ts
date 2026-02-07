@@ -57,7 +57,7 @@ export interface ITransaction {
 	id?: string;
 	userId: string;
 	recipientId?: string;
-	dealId?: string;
+	propertyId?: string;
 	type: "Deposit" | "Withdrawal" | "Income" | "Escrow";
 	transactionType: "Credit" | "Debit";
 	amount: number;

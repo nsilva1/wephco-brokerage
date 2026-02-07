@@ -25,7 +25,7 @@ const Leads = () => {
 					<Loader />
 				) : leads.length === 0 ? (
 					<div className="flex justify-center items-center h-screen">
-						<p className="text-gray-500">
+						<p className="text-gray-500 text-center">
 							No leads available. Click the + icon to add a new lead.
 						</p>
 					</div>

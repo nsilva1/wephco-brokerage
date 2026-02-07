@@ -19,6 +19,8 @@ import { LeadDetails } from './pages/leads/LeadDetails';
 import { AddNewLead } from './pages/leads/AddNewLead';
 import { Wallet } from './pages/wallet/Wallet';
 import { RequestPayment } from './pages/wallet/RequestPayment';
+import { MyAssets } from './pages/assets/MyAssets';
+import { Documents } from './pages/documents/Documents';
 import { LearningCenter } from './pages/learning_center/LearningCenter';
 
 
@@ -44,6 +46,14 @@ function App() {
 					/>
 					<Route
 						path="/properties"
+						element={
+							<Layout>
+								<Properties />
+							</Layout>
+						}
+					/>
+					<Route
+						path="/search"
 						element={
 							<Layout>
 								<Properties />
@@ -100,6 +110,8 @@ function App() {
 					/>
 					<Route path='/wallet/request-payment' element={<Layout><RequestPayment /></Layout>} />
 					<Route path='/learning-center' element={<Layout><LearningCenter /></Layout>} />
+					<Route path='/assets' element={<Layout><MyAssets /></Layout>} />
+					<Route path='/documents' element={<Layout><Documents /></Layout>} />
 				</Routes>
 			</BrowserRouter>
 			</PWAProvider>
