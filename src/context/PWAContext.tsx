@@ -11,7 +11,7 @@ const PWAContext = createContext<PWAContextType | null>(null);
 
 export const PWAProvider = ({ children }: { children: React.ReactNode }) => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstallable, setIsInstallable] = useState(true);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {

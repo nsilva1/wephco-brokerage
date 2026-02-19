@@ -17,11 +17,19 @@ const ReloadPrompt = () => {
 
   // 1. Handle Install Prompt Event
   useEffect(() => {
+    // Check if already installed
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                         || (window.navigator as any).standalone === true;
+
+    // Listen for the native event
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);
-      setShowInstallPrompt(true);
+      if (!isStandalone) setShowInstallPrompt(true);
     };
+
+    // If not installed, show the UI regardless of the event (for iOS/Fallback)
+    if (!isStandalone) setShowInstallPrompt(true);
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -30,19 +38,23 @@ const ReloadPrompt = () => {
   // 2. Auto-dismiss "Offline Ready" toast after 3 seconds
   useEffect(() => {
     if (offlineReady) {
-      const timer = setTimeout(() => setOfflineReady(false), 3000);
+      const timer = setTimeout(() => setOfflineReady(false), 2000);
       return () => clearTimeout(timer);
     }
   }, [offlineReady, setOfflineReady]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (deferredPrompt) {
+    // 1. Native Flow (Chrome/Android/Edge)
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
+    if (outcome === 'accepted') setDeferredPrompt(null);
     setShowInstallPrompt(false);
+  } else {
+    // 2. Fallback Flow (iOS/Manual)
+    alert("To install: Tap the 'Share' button in your browser and select 'Add to Home Screen' 📲");
+    // Ideally, replace this alert with a nice custom Modal/Tooltip
+  }
   };
 
   // Don't show anything on auth pages
