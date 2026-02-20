@@ -28,17 +28,20 @@ const LeadDetails = () => {
 	// const [properties, setProperties] = useState<IProperty[]>([]);
 	const [edit, setEdit] = useState(false);
 
-	const { properties } = useProperties()
+	const { properties } = useProperties();
 
 	const handleChange = (input: keyof ILeads, value: string | number) => {
-		setLead((prev) => ({
-			...prev!,
-			[input]: value,
-		} as ILeads));
-	}
+		setLead(
+			(prev) =>
+				({
+					...prev!,
+					[input]: value,
+				}) as ILeads
+		);
+	};
 
 	const updateLead = async () => {
-		if(!edit || !lead){
+		if (!edit || !lead) {
 			setEdit(true);
 			return;
 		}
@@ -47,16 +50,16 @@ const LeadDetails = () => {
 
 		try {
 			await LeadsService.update(id!, lead);
-			toast.success("Lead information updated successfully");
+			toast.success('Lead information updated successfully');
 			setEdit(false);
 			getLead();
 		} catch (error) {
 			toast.error('Failed to update lead information');
-			console.error(error)
+			console.error(error);
 		} finally {
-			setUpdateLoading(false)
+			setUpdateLoading(false);
 		}
-	}
+	};
 
 	const sendMessage = (phoneNumber: string, leadName: string) => {
 		// logic to send message to lead
@@ -86,33 +89,32 @@ const LeadDetails = () => {
 	// }, [])
 
 	const getPropertyDetails = useCallback(async (propertyId: string) => {
-	    try {
-	        const data = await PropertyService.getById(propertyId);
-	        setProperty(data);
-	    } catch (error) {
-	        toast.error("Failed to fetch property details");
-	    }
+		try {
+			const data = await PropertyService.getById(propertyId);
+			setProperty(data);
+		} catch (error) {
+			toast.error('Failed to fetch property details');
+		}
 	}, []);
 
 	const getLead = useCallback(async () => {
-	    if (!id) return;
-	    setLoading(true);
-	    try {
-	        const data = await LeadsService.getById(id);
-	        setLead(data);
-	        if (data?.propertyId) {
-	            await getPropertyDetails(data.propertyId);
-	        }
-	    } catch (error) {
-	        toast.error("Failed to fetch lead details");
-	    } finally {
-	        setLoading(false);
-	    }
+		if (!id) return;
+		setLoading(true);
+		try {
+			const data = await LeadsService.getById(id);
+			setLead(data);
+			if (data?.propertyId) {
+				await getPropertyDetails(data.propertyId);
+			}
+		} catch (error) {
+			toast.error('Failed to fetch lead details');
+		} finally {
+			setLoading(false);
+		}
 	}, [id]);
 
 	useEffect(() => {
 		getLead();
-
 	}, []);
 
 	if (!lead && !loading) {
@@ -167,7 +169,9 @@ const LeadDetails = () => {
 									type="text"
 									className="p-2 border w-full border-gray-300 rounded-lg"
 									value={lead?.budget}
-									onChange={(e) => handleChange('budget', Number(e.target.value))}
+									onChange={(e) =>
+										handleChange('budget', Number(e.target.value))
+									}
 								/>
 							) : (
 								<p>{formatCompactNumber(lead?.budget!)}</p>
@@ -178,25 +182,27 @@ const LeadDetails = () => {
 						<Building2 className="w-8 h-8 text-primary" />
 						<div className="flex flex-col">
 							<label className="text-primary">Interest</label>
-							{
-								edit ? (
-									<select value={lead?.propertyId} onChange={(e) => handleChange('propertyId', e.target.value)} className='p-2 border border-gray-300 rounded-lg w-full'>
-										<option value="">-</option>
-										{properties.map((property, idx) => (
-											<option key={idx} value={property.id}>
-												{property.title}
-											</option>
-										))}
-									</select>
-								) : (
-									<Link
-								className="cursor-pointer font-bold hover:underline"
-								to={`/properties/${lead?.propertyId}`}
-							>
-								{property?.title}
-							</Link>
-								)
-							}
+							{edit ? (
+								<select
+									value={lead?.propertyId}
+									onChange={(e) => handleChange('propertyId', e.target.value)}
+									className="p-2 border border-gray-300 rounded-lg w-full"
+								>
+									<option value="">-</option>
+									{properties.map((property, idx) => (
+										<option key={idx} value={property.id}>
+											{property.title}
+										</option>
+									))}
+								</select>
+							) : (
+								<Link
+									className="cursor-pointer font-bold hover:underline"
+									to={`/properties/${lead?.propertyId}`}
+								>
+									{property?.title}
+								</Link>
+							)}
 						</div>
 					</div>
 				</div>
@@ -204,16 +210,17 @@ const LeadDetails = () => {
 				<div>
 					<h3 className={`${typography.h5} font-bold`}>Actions</h3>
 					<div className="flex items-center justify-center md:justify-start gap-4 mt-4">
-						{
-							updateLoading ? (
-								<Loader label='Updating Lead information...' />
-							) : (
-								<button onClick={updateLead} className="flex gap-2 items-center text-primary bg-amber-100 p-3 rounded-lg text-sm">
-							<RefreshCw />
-							Update Status
-						</button>
-							)
-						}
+						{updateLoading ? (
+							<Loader label="Updating Lead information..." />
+						) : (
+							<button
+								onClick={updateLead}
+								className="flex gap-2 items-center text-primary bg-amber-100 p-3 rounded-lg text-sm"
+							>
+								<RefreshCw />
+								Update Status
+							</button>
+						)}
 						<button
 							onClick={() => sendMessage(lead?.phone!, lead?.name!)}
 							className="flex gap-2 items-center text-white bg-primary p-3 rounded-lg text-sm"

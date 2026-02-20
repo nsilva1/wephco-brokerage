@@ -1,11 +1,11 @@
-import { ComingSoonCard } from '../../components/ComingSoon'
+import { ComingSoonCard } from '../../components/ComingSoon';
 
 const LearningCenter = () => {
-  return (
-    <div className='flex justify-center items-center'>
-        <ComingSoonCard />
-    </div>
-  )
-}
+	return (
+		<div className="flex justify-center items-center">
+			<ComingSoonCard />
+		</div>
+	);
+};
 
-export { LearningCenter }
+export { LearningCenter };

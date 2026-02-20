@@ -11,14 +11,14 @@ const InvestorSidebar = () => {
 				{investorNavItems.map((item, idx) => (
 					<NavLink
 						key={idx}
-						to={item.path}className={({ isActive }) =>
-						`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
-							isActive
-								? 'text-white bg-primary rounded-full p-3'
-								: 'text-stone-600 hover:bg-stone-100 hover:text-primary'
-						}`
-					}
-					
+						to={item.path}
+						className={({ isActive }) =>
+							`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
+								isActive
+									? 'text-white bg-primary rounded-full p-3'
+									: 'text-stone-600 hover:bg-stone-100 hover:text-primary'
+							}`
+						}
 					>
 						{<item.icon />}
 						<span className="font-medium">{item.label}</span>

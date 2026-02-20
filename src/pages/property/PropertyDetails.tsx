@@ -8,37 +8,56 @@ import { toast } from 'react-toastify';
 import { ShieldCheck, Mail, ArrowLeft } from 'lucide-react';
 import { formatCompactNumber } from '../../lib/helperFunctions';
 import { Loader } from '../../components/Loader';
+import { useAuth } from '../../context/AuthContext';
 
 const PropertyDetails = () => {
 	const { id } = useParams();
+	const { currentUser } = useAuth();
 
 	// const property = generateData(PropertySchema);
 
-	  const [property, setProperty] = React.useState<IProperty>({} as IProperty);
-	  const [loading, setLoading] = useState(false)
+	const [property, setProperty] = React.useState<IProperty>({} as IProperty);
+	const [loading, setLoading] = useState(false);
 
-	  const getPropertyDetails = useCallback(async () => {
-	    if (!id) return;
+	const handleWhatsAppShare = () => {
+		const propertyTitle = property.title;
+		const currentUrl = window.location.href;
 
-		setLoading(true)
+		// Create the message template
+		const message = `Check out this property: *${propertyTitle}*\n\nView details here: ${currentUrl}`;
 
-	    try {
-	      const data = await PropertyService.getById(id);
-	      setProperty(data);
-	    } catch (error) {
-	      toast.error('Failed to fetch property details.');
-	    } finally {
-			setLoading(false)
+		// Encode the message for a URL
+		const encodedMessage = encodeURIComponent(message);
+
+		// Use the whatsapp:// protocol for mobile and web.whatsapp for desktop
+		const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+
+		// Open in a new tab
+		window.open(whatsappUrl, '_blank');
+	};
+
+	const getPropertyDetails = useCallback(async () => {
+		if (!id) return;
+
+		setLoading(true);
+
+		try {
+			const data = await PropertyService.getById(id);
+			setProperty(data);
+		} catch (error) {
+			toast.error('Failed to fetch property details.');
+		} finally {
+			setLoading(false);
 		}
-	  }, [id])
+	}, [id]);
 
-	  useEffect(() => {
-	    getPropertyDetails()
-	  }, [])
+	useEffect(() => {
+		getPropertyDetails();
+	}, []);
 
-	  if(loading){
-		return <Loader label='Loading Property Details' />
-	  }
+	if (loading) {
+		return <Loader label="Loading Property Details" />;
+	}
 
 	return (
 		<div className="md:p-8 w-full mt-4">
@@ -110,10 +129,15 @@ const PropertyDetails = () => {
 				</div>
 
 				<div>
-					<button className="bg-primary text-white w-full py-2 px-4 rounded-lg cursor-pointer hover:bg-black/90 flex items-center gap-2">
-						<Mail className="text-white" />
-						Send Details to Client
-					</button>
+					{currentUser && (
+						<button
+							onClick={handleWhatsAppShare}
+							className="bg-primary text-white w-full py-2 px-4 rounded-lg cursor-pointer hover:bg-black/90 flex items-center gap-2"
+						>
+							<Mail className="text-white" />
+							Send Details to Client
+						</button>
+					)}
 				</div>
 
 				<div>

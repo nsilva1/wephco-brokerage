@@ -10,24 +10,24 @@ import { useProperties } from '../../hooks/properties';
 
 const AddNewLead = () => {
 	const [newLead, setNewLead] = useState<ILeads>({
-	name: '',
-	email: '',
-	phone: '',
-	userId: '',
-	propertyId: '',
-	budget: 0,
-	source: '',
-	status: 'New Lead',
+		name: '',
+		email: '',
+		phone: '',
+		userId: '',
+		propertyId: '',
+		budget: 0,
+		source: '',
+		status: 'New Lead',
 	});
 	// const [properties, setProperties] = useState<IProperty[]>([]);
 	const [loading, setLoading] = useState(false);
 
-	const { currentUser } = useAuth()
-	const { properties } = useProperties()
+	const { currentUser } = useAuth();
+	const { properties } = useProperties();
 
 	// const fetchProperties = useCallback(async () => {
 	// 		setLoading(true)
-	
+
 	// 		try {
 	// 			const response = await PropertyService.getAll();
 	// 			setProperties(response);
@@ -40,22 +40,25 @@ const AddNewLead = () => {
 
 	const clearForm = () => {
 		setNewLead({
-	name: '',
-	email: '',
-	phone: '',
-	userId: '',
-	propertyId: '',
-	budget: 0,
-	source: '',
-	status: 'New Lead',
-	});
-	}
+			name: '',
+			email: '',
+			phone: '',
+			userId: '',
+			propertyId: '',
+			budget: 0,
+			source: '',
+			status: 'New Lead',
+		});
+	};
 
 	const handleChange = (input: keyof ILeads, value: string | number) => {
-		setNewLead((prev) => ({
-			...prev,
-			[input]: value,
-		} as ILeads));
+		setNewLead(
+			(prev) =>
+				({
+					...prev,
+					[input]: value,
+				}) as ILeads
+		);
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -71,8 +74,8 @@ const AddNewLead = () => {
 				budget: newLead?.budget!,
 				propertyId: newLead?.propertyId!,
 				source: newLead?.source!,
-				status:'New Lead'
-			}
+				status: 'New Lead',
+			};
 
 			await LeadsService.create(leadPayload);
 			toast.success('Lead added successfully');
@@ -83,7 +86,6 @@ const AddNewLead = () => {
 			setLoading(false);
 		}
 	};
-
 
 	return (
 		<div>
@@ -140,7 +142,9 @@ const AddNewLead = () => {
 									required
 									type="number"
 									value={newLead?.budget}
-									onChange={(e) => handleChange('budget', Number(e.target.value))}
+									onChange={(e) =>
+										handleChange('budget', Number(e.target.value))
+									}
 									className="p-2 rounded-lg w-full border mt-2"
 								/>
 							</div>
@@ -148,7 +152,11 @@ const AddNewLead = () => {
 								<label>
 									Property<span className="text-red-500">*</span>
 								</label>
-								<select className="p-2 rounded-lg w-full border mt-2" value={newLead?.propertyId} onChange={(e) => handleChange('propertyId', e.target.value)}>
+								<select
+									className="p-2 rounded-lg w-full border mt-2"
+									value={newLead?.propertyId}
+									onChange={(e) => handleChange('propertyId', e.target.value)}
+								>
 									<option value="">-</option>
 									{properties.map((property, idx) => (
 										<option key={idx} value={property.id}>
@@ -161,7 +169,11 @@ const AddNewLead = () => {
 								<label>
 									Lead Source<span className="text-red-500">*</span>
 								</label>
-								<select className="p-2 rounded-lg w-full border mt-2" value={newLead?.source} onChange={(e) => handleChange('source', e.target.value)}>
+								<select
+									className="p-2 rounded-lg w-full border mt-2"
+									value={newLead?.source}
+									onChange={(e) => handleChange('source', e.target.value)}
+								>
 									<option value="">-</option>
 									<option value="Website">Website</option>
 									<option value="Referral">Referral</option>

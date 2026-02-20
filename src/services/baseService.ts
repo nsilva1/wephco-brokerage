@@ -41,24 +41,22 @@ export class BaseService<T extends DocumentData> {
 	}
 
 	async getAll(userId?: string) {
-		
 		try {
-			if(userId){
-				const q = query(this.collectionRef, where('userId', '==', userId))
+			if (userId) {
+				const q = query(this.collectionRef, where('userId', '==', userId));
 
 				const snapshot = await getDocs(q);
 				return snapshot.docs.map((doc) => ({
-				...doc.data(),
-				id: doc.id,
-			})) as (T & { id: string })[];
+					...doc.data(),
+					id: doc.id,
+				})) as (T & { id: string })[];
 			} else {
 				const snapshot = await getDocs(this.collectionRef);
-			return snapshot.docs.map((doc) => ({
-				...doc.data(),
-				id: doc.id,
-			})) as (T & { id: string })[];
+				return snapshot.docs.map((doc) => ({
+					...doc.data(),
+					id: doc.id,
+				})) as (T & { id: string })[];
 			}
-			
 		} catch (error: any) {
 			throw new Error(
 				`[${this.collectionName}] Get All Error: ${error.message}`
@@ -83,13 +81,17 @@ export class BaseService<T extends DocumentData> {
 	// UPDATE
 	async update(id: string, data: Partial<T>) {
 		if (!id) {
-        throw new Error(`[${this.collectionName}] Update Error: Document ID is required.`);
-    }
+			throw new Error(
+				`[${this.collectionName}] Update Error: Document ID is required.`
+			);
+		}
 
-    // 2. Check: Ensure data is not undefined
-    if (!data) {
-        throw new Error(`[${this.collectionName}] Update Error: Update data is required.`);
-    }
+		// 2. Check: Ensure data is not undefined
+		if (!data) {
+			throw new Error(
+				`[${this.collectionName}] Update Error: Update data is required.`
+			);
+		}
 
 		try {
 			const docRef = doc(db, this.collectionName, id);

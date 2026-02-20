@@ -15,23 +15,26 @@ interface PreviewFile extends File {
 
 const AddNewProperty = () => {
 	const [files, setFiles] = useState<PreviewFile[]>([]);
-	const [propertyData, setPropertyData] = useState<IProperty | null>(null)
-	const [loading, setLoading] = useState(false)
+	const [propertyData, setPropertyData] = useState<IProperty | null>(null);
+	const [loading, setLoading] = useState(false);
 
-	const { reLoadProperties } = useProperties()
-	const navigate = useNavigate()
+	const { reLoadProperties } = useProperties();
+	const navigate = useNavigate();
 
 	const handleChange = (input: keyof IProperty, value: string | number) => {
-		setPropertyData((prev) => ({
-			...prev,
-			[input]: value,
-		} as IProperty));
-	}
+		setPropertyData(
+			(prev) =>
+				({
+					...prev,
+					[input]: value,
+				}) as IProperty
+		);
+	};
 
 	const clearForm = () => {
 		setPropertyData(null);
 		setFiles([]);
-	}
+	};
 
 	const handleFiles = (newFiles: File[]): void => {
 		// Map the new files to our PreviewFile interface
@@ -50,40 +53,40 @@ const AddNewProperty = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setLoading(true)
+		setLoading(true);
 		try {
-			const imageURL = await uploadPropertyImage(files[0])
+			const imageURL = await uploadPropertyImage(files[0]);
 			// const uploadPromises = files.map((file) => uploadPropertyImage(file));
 			// const downloadURLs = await Promise.all(uploadPromises);
-		
-		// create property payload
-		const newProperty: IProperty = {
-			title: propertyData?.title!,
-			developer: propertyData?.developer!,
-			location: propertyData?.location!,
-			price: propertyData?.price!,
-			yield: propertyData?.yield!,
-			status: propertyData?.status!,
-			description: propertyData?.description!,
-			image: imageURL,
-		};
-		
-		// submit to backend
-		await PropertyService.create(newProperty);
-		toast.success('Property submitted successfully!');
-		clearForm();
-		await reLoadProperties()
-		navigate('/properties')
+
+			// create property payload
+			const newProperty: IProperty = {
+				title: propertyData?.title!,
+				developer: propertyData?.developer!,
+				location: propertyData?.location!,
+				price: propertyData?.price!,
+				yield: propertyData?.yield!,
+				status: propertyData?.status!,
+				description: propertyData?.description!,
+				image: imageURL,
+			};
+
+			// submit to backend
+			await PropertyService.create(newProperty);
+			toast.success('Property submitted successfully!');
+			clearForm();
+			await reLoadProperties();
+			navigate('/properties');
 		} catch (error) {
 			console.error('Error submitting property:', error);
 			toast.error('Failed to submit property.');
 		} finally {
-			setLoading(false)
+			setLoading(false);
 		}
-	}
+	};
 
-	if(loading) {
-		return <Loader label='Uploading property information...' />
+	if (loading) {
+		return <Loader label="Uploading property information..." />;
 	}
 
 	return (
@@ -165,7 +168,11 @@ const AddNewProperty = () => {
 							<label>
 								Status<span className="text-red-500">*</span>
 							</label>
-							<select className="p-2 rounded-lg w-full border mt-2" onChange={(e) => handleChange('status', e.target.value)} value={propertyData?.status}>
+							<select
+								className="p-2 rounded-lg w-full border mt-2"
+								onChange={(e) => handleChange('status', e.target.value)}
+								value={propertyData?.status}
+							>
 								<option value="">-</option>
 								<option value="Selling Fast">Selling Fast</option>
 								<option value="Exclusive">Exclusive</option>
@@ -216,7 +223,10 @@ const AddNewProperty = () => {
 
 					{/* submit */}
 					<div>
-						<button onClick={handleSubmit} className="text-white bg-primary p-3 w-full rounded-xl flex items-center justify-center gap-2 mt-4">
+						<button
+							onClick={handleSubmit}
+							className="text-white bg-primary p-3 w-full rounded-xl flex items-center justify-center gap-2 mt-4"
+						>
 							<Building />
 							Submit for Review (List Property)
 						</button>

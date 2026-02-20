@@ -23,98 +23,118 @@ import { MyAssets } from './pages/assets/MyAssets';
 import { Documents } from './pages/documents/Documents';
 import { LearningCenter } from './pages/learning_center/LearningCenter';
 
-
 function App() {
 	return (
 		<AuthProvider>
 			<DataProvider>
 				<PWAProvider>
-				<ToastContainer />
-			<BrowserRouter>
-			<ReloadPrompt />
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route
-						path="/home"
-						element={
-							<Layout>
-								<Dashboard />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/properties"
-						element={
-							<Layout>
-								<Properties />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/search"
-						element={
-							<Layout>
-								<Properties />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/properties/:id"
-						element={
-							<Layout>
-								<PropertyDetails />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/properties/new"
-						element={
-							<Layout>
-								<AddNewProperty />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/leads"
-						element={
-							<Layout>
-								<Leads />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/leads/:id"
-						element={
-							<Layout>
-								<LeadDetails />
-							</Layout>
-						}
-					/>
-					<Route
-						path="/leads/new"
-						element={
-							<Layout>
-								<AddNewLead />
-							</Layout>
-						}
-					/>
-					<Route 
-						path='/wallet'
-						element={
-							<Layout>
-								<Wallet />
-							</Layout>
-						}
-					/>
-					<Route path='/wallet/request-payment' element={<Layout><RequestPayment /></Layout>} />
-					<Route path='/learning-center' element={<Layout><LearningCenter /></Layout>} />
-					<Route path='/assets' element={<Layout><MyAssets /></Layout>} />
-					<Route path='/documents' element={<Layout><Documents /></Layout>} />
-				</Routes>
-			</BrowserRouter>
-			</PWAProvider>
+					<ToastContainer />
+					<BrowserRouter>
+						<ReloadPrompt />
+						<Routes>
+							<Route path="/" element={<Home />} />
+							<Route path="/login" element={<Login />} />
+							<Route path="/register" element={<Register />} />
+							<Route
+								path="/home"
+								element={
+									<Layout>
+										<Dashboard />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/properties"
+								element={
+									<Layout>
+										<Properties />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/search"
+								element={
+									<Layout>
+										<Properties />
+									</Layout>
+								}
+							/>
+							<Route path="/properties/:id" element={<PropertyDetails />} />
+							<Route
+								path="/properties/new"
+								element={
+									<Layout>
+										<AddNewProperty />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/leads"
+								element={
+									<Layout>
+										<Leads />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/leads/:id"
+								element={
+									<Layout>
+										<LeadDetails />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/leads/new"
+								element={
+									<Layout>
+										<AddNewLead />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/wallet"
+								element={
+									<Layout>
+										<Wallet />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/wallet/request-payment"
+								element={
+									<Layout>
+										<RequestPayment />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/learning-center"
+								element={
+									<Layout>
+										<LearningCenter />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/assets"
+								element={
+									<Layout>
+										<MyAssets />
+									</Layout>
+								}
+							/>
+							<Route
+								path="/documents"
+								element={
+									<Layout>
+										<Documents />
+									</Layout>
+								}
+							/>
+						</Routes>
+					</BrowserRouter>
+				</PWAProvider>
 			</DataProvider>
 		</AuthProvider>
 	);

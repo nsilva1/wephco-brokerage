@@ -47,9 +47,12 @@ export const registerUser = async (userData: INewUser) => {
 				currency: 'USD',
 			},
 			transactions: [],
-		}
+		};
 		// We use setDoc + doc() to ensure the Firestore ID matches the Auth UID
-		await setDoc(doc(db, 'users', user.uid), { ...userData, createdAt: serverTimestamp() });
+		await setDoc(doc(db, 'users', user.uid), {
+			...userData,
+			createdAt: serverTimestamp(),
+		});
 
 		return { uid: user.uid, success: true };
 	} catch (error: any) {

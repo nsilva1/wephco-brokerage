@@ -7,10 +7,8 @@ import { useProperties } from '../../hooks/properties';
 import { useLeads } from '../../hooks/leads';
 
 const Leads = () => {
-	
-	const { properties } = useProperties()
-	const { leads, loading } = useLeads()
-
+	const { properties } = useProperties();
+	const { leads, loading } = useLeads();
 
 	return (
 		<div>

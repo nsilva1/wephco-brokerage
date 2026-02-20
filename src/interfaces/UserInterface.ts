@@ -58,10 +58,10 @@ export interface ITransaction {
 	userId: string;
 	recipientId?: string;
 	propertyId?: string;
-	type: "Deposit" | "Withdrawal" | "Income" | "Escrow";
-	transactionType: "Credit" | "Debit";
+	type: 'Deposit' | 'Withdrawal' | 'Income' | 'Escrow';
+	transactionType: 'Credit' | 'Debit';
 	amount: number;
-	status: "Pending" | "Completed" | "Failed";
+	status: 'Pending' | 'Completed' | 'Failed';
 	description: string;
 	createdAt?: string;
 }
@@ -79,10 +79,10 @@ export interface UserAgent {
 }
 
 export interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
+	readonly platforms: string[];
+	readonly userChoice: Promise<{
+		outcome: 'accepted' | 'dismissed';
+		platform: string;
+	}>;
+	prompt(): Promise<void>;
 }

@@ -15,12 +15,12 @@ const Login = () => {
 	}, [currentUser, loading, navigate]);
 
 	if (loading) {
-        return (
-            <div className="h-screen flex items-center justify-center">
-                <Loader /> 
-            </div>
-        );
-    }
+		return (
+			<div className="h-screen flex items-center justify-center">
+				<Loader />
+			</div>
+		);
+	}
 
 	return (
 		<div className="h-screen flex flex-col items-center justify-center font-outfit overflow-y-scroll">

@@ -3,40 +3,40 @@
  * Supports Date objects, ISO strings, or Firebase Timestamps.
  */
 export const getRelativeTime = (date: any): string => {
-    // 1. Handle Firestore Timestamp objects
-    let dateObj: Date;
-    if (date && typeof date.toDate === 'function') {
-        dateObj = date.toDate();
-    } else {
-        dateObj = new Date(date);
-    }
+	// 1. Handle Firestore Timestamp objects
+	let dateObj: Date;
+	if (date && typeof date.toDate === 'function') {
+		dateObj = date.toDate();
+	} else {
+		dateObj = new Date(date);
+	}
 
-    // 2. Fallback for invalid dates
-    if (isNaN(dateObj.getTime())) return 'unknown time';
+	// 2. Fallback for invalid dates
+	if (isNaN(dateObj.getTime())) return 'unknown time';
 
-    const now = new Date().getTime();
-    const then = dateObj.getTime();
-    const diffInSeconds = Math.floor((then - now) / 1000);
+	const now = new Date().getTime();
+	const then = dateObj.getTime();
+	const diffInSeconds = Math.floor((then - now) / 1000);
 
-    const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
-        { unit: 'year', seconds: 31536000 },
-        { unit: 'month', seconds: 2592000 },
-        { unit: 'week', seconds: 604800 },
-        { unit: 'day', seconds: 86400 },
-        { unit: 'hour', seconds: 3600 },
-        { unit: 'minute', seconds: 60 },
-        { unit: 'second', seconds: 1 },
-    ];
+	const units: { unit: Intl.RelativeTimeFormatUnit; seconds: number }[] = [
+		{ unit: 'year', seconds: 31536000 },
+		{ unit: 'month', seconds: 2592000 },
+		{ unit: 'week', seconds: 604800 },
+		{ unit: 'day', seconds: 86400 },
+		{ unit: 'hour', seconds: 3600 },
+		{ unit: 'minute', seconds: 60 },
+		{ unit: 'second', seconds: 1 },
+	];
 
-    for (const { unit, seconds } of units) {
-        if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
-            const value = Math.floor(diffInSeconds / seconds);
-            const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-            return rtf.format(value, unit);
-        }
-    }
+	for (const { unit, seconds } of units) {
+		if (Math.abs(diffInSeconds) >= seconds || unit === 'second') {
+			const value = Math.floor(diffInSeconds / seconds);
+			const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+			return rtf.format(value, unit);
+		}
+	}
 
-    return 'just now';
+	return 'just now';
 };
 
 /**
@@ -78,8 +78,8 @@ export const formatCompactNumber = (
 };
 
 export const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount);
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+	}).format(amount);
 };

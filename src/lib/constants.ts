@@ -1,10 +1,10 @@
 import { Home, Users, Building, Wallet, BriefcaseBusiness } from 'lucide-react';
 import {
-  HiChartPie,
-  HiSearch,
-  HiOfficeBuilding,
-  HiDocumentText,
-} from 'react-icons/hi'; 
+	HiChartPie,
+	HiSearch,
+	HiOfficeBuilding,
+	HiDocumentText,
+} from 'react-icons/hi';
 
 export const NAIRA_SYMBOL = '₦';
 
@@ -21,9 +21,9 @@ export const navItems = [
 ];
 
 export const investorNavItems = [
-    { path: '/home', icon: HiChartPie, label: 'Dashboard' },
-    { path: '/search', icon: HiSearch, label: 'Search' },
-    { path: '/assets', icon: HiOfficeBuilding, label: 'My Assets' },
-    { path: '/documents', icon: HiDocumentText, label: 'Documents' },
-    { path: '/wallet', icon: Wallet, label: 'Wallet' },
+	{ path: '/home', icon: HiChartPie, label: 'Dashboard' },
+	{ path: '/search', icon: HiSearch, label: 'Search' },
+	{ path: '/assets', icon: HiOfficeBuilding, label: 'My Assets' },
+	{ path: '/documents', icon: HiDocumentText, label: 'Documents' },
+	{ path: '/wallet', icon: Wallet, label: 'Wallet' },
 ];
