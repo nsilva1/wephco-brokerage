@@ -67,7 +67,7 @@ const ReloadPrompt = () => {
       setShowInstallPrompt(false);
     } else {
       // Manual Fallback (iOS/Safari)
-      alert("To install: Tap the 'Share' icon in your browser and select 'Add to Home Screen' 📲");
+      alert("To install: Tap the 'Menu' icon or 'Three Dot' icon at the top of your browser and select 'Add to Home Screen'");
       // Optional: You could hide the prompt after showing instructions
       // setShowInstallPrompt(false);
     }
